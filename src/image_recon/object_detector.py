@@ -16,6 +16,7 @@ import numpy as np
 import os.path
 import threading
 
+from image_recon.color_detector import determine_color
 
 class ObjectDetector:
     def __init__(self):
@@ -45,28 +46,29 @@ class ObjectDetector:
         layers_names = self.net.getLayerNames()
         return [layers_names[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
 
-    def draw_predictions(self, class_id, conf, left, top, right, bottom):
+    def draw_predictions(self, class_id, conf, left, top, right, bottom, color):
         cv.rectangle(self.frame, (left, top), (right, bottom), (255, 178, 50), 3)
         label = f"{round(conf, 3)}"
         if self.classes:
             assert(class_id < len(self.classes))
             label = f"{self.classes[class_id]}: {label}"
-        
+
         label_size, base_line = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
         top = max(top, label_size[1])
         cv.rectangle(self.frame, (left, top - round(1.5 * label_size[1])), (left + round(1.5 * label_size[0]),
                                                                        top + base_line),
-                     (255, 255, 255), cv.FILLED)
+                     color, cv.FILLED)
         cv.putText(self.frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
-        
+
     def post_process(self, frame, outs):
+        colours = []
         frame_height = frame.shape[0]
         frame_width = frame.shape[1]
-        
+
         class_ids = []
         confidences = []
         boxes = []
-        
+
         for out in outs:
             for detection in out:
                 scores = detection[5:]
@@ -91,7 +93,10 @@ class ObjectDetector:
             top = box[1]
             width = box[2]
             height = box[3]
-            self.draw_predictions(class_ids[i], confidences[i], left, top, left + width, top + height)
+            # color = determine_color(self.frame, box)
+            self.draw_predictions(class_ids[i], confidences[i], left, top, left + width, top + height, (255, 255, 255))
+
+        print(colours)
 
     def prediction_engine(self, file_name, file_type, success_indicator):
         self.file_name = "src/image_recon/uploaded/" + file_name

@@ -16,7 +16,7 @@ from flask import Flask, render_template, request, redirect, session
 from werkzeug.utils import secure_filename
 from uuid import uuid4
 
-from src.image_recon.object_detector import ObjectDetector
+from image_recon.object_detector import ObjectDetector
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "uploaded"

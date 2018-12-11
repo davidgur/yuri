@@ -2,12 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>YURI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:900" rel="stylesheet">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400" />
+    <script>(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);</script>
+    <title>yuri - Object Detection Solutions</title>
 </head>
 <body>
+    <div class="videoContainer">
+        <div class="overlay"></div>
+        <video autoplay loop muted>
+            <source src="{{ url_for('static', filename='bg_video_comp.mp4') }}" type="video/mp4">
+            <source src="{{ url_for('static', filename='bg_video_comp.webm') }}" type="video/webm">
+        </video>
+    </div>
+
+    <div class="logo-text">
+        <h1>yuri</h1>
+        <br />
+        <p class="line-one">high level object detection solutions</p>
+        <p>with machine learning</p>
+    </div>
+
+    <div class="container">
+        <div class="file-submit">
+            <form action="/upload" class="dropzone" id="dropzone"></form>
+        </div>
+    </div>
+
+<!--
     <form action = "/uploader" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" />
         <input type="submit" />
     </form>
+-->
 </body>
+<script src="{{ url_for('static', filename='dropzone.js') }}"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </html>

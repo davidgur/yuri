@@ -17,37 +17,13 @@ import matplotlib.pyplot as plt
 
 from sklearn.cluster import KMeans
 
-class DominantColors:
 
-    CLUSTERS = None
-    IMAGE = None
-    COLORS = None
-    LABELS = None
-
-    def __init__(self, image, clusters=3):
-        self.CLUSTERS = clusters
-        self.IMAGE = image
-
-    def dominantColors(self):
-        #convert to rgb from bgr
-        self.IMAGE = cv2.cvtColor(self.IMAGE, cv2.COLOR_BGR2RGB)
-
-        #reshaping to a list of pixels
-        self.IMAGE = img.reshape((self.IMAGE.shape[0] * self.IMAGE.shape[1], 3))
-
-
-        #using k-means to cluster pixels
-        kmeans = KMeans(n_clusters = self.CLUSTERS)
-        kmeans.fit(self.IMAGE)
-
-        #the cluster centers are our dominant colors.
-        self.COLORS = kmeans.cluster_centers_
-
-        #save labels
-        self.LABELS = kmeans.labels_
-
-        #returning after converting to integer from float
-        return self.COLORS.astype(int)
+def find_histogram(clt):
+    numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
+    (hist, _) = np.histogram(clt.labels_, bins=numLabels)
+    hist = hist.astype("float")
+    hist /= hist.sum()
+    return hist
 
 
 def determine_color(frame, box):
@@ -59,7 +35,14 @@ def determine_color(frame, box):
     frame_copy = frame.copy()
 
     img = frame_copy[top:top+height, left:left+width]
-    dc = DominantColors(img, 5)
-    colors = dc.dominantColors()
-    dc.plotHistogram()
-    return (255, 255, 255)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = img.reshape((img.shape[0] * img.shape[1], 3))
+
+    clt = KMeans(n_clusters=3)
+    clt.fit(img)
+
+    hist = find_histogram(clt)
+    colors = [tuple(color.astype("uint8")) for (percent, color) in zip(hist, clt.cluster_centers_)]
+
+    return colors
+

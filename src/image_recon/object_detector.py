@@ -16,7 +16,9 @@ import numpy as np
 import os.path
 import threading
 
+# noinspection PyUnresolvedReferences
 from image_recon.color_detector import determine_color
+
 
 class ObjectDetector:
     def __init__(self):
@@ -47,7 +49,7 @@ class ObjectDetector:
         return [layers_names[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
 
     def draw_predictions(self, class_id, conf, left, top, right, bottom, color):
-        cv.rectangle(self.frame, (left, top), (right, bottom), (255, 178, 50), 3)
+        cv.rectangle(self.frame, (left, top), (right, bottom), color, 3)
         label = f"{round(conf, 3)}"
         if self.classes:
             assert(class_id < len(self.classes))
@@ -57,7 +59,7 @@ class ObjectDetector:
         top = max(top, label_size[1])
         cv.rectangle(self.frame, (left, top - round(1.5 * label_size[1])), (left + round(1.5 * label_size[0]),
                                                                        top + base_line),
-                     color, cv.FILLED)
+                     (255, 255, 255), cv.FILLED)
         cv.putText(self.frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
 
     def post_process(self, frame, outs):
@@ -86,6 +88,7 @@ class ObjectDetector:
                     boxes.append([left, top, width, height])
 
         indices = cv.dnn.NMSBoxes(boxes, confidences, self.confidence_threshold, self.nms_threshold)
+
         for i in indices:
             i = i[0]
             box = boxes[i]
@@ -93,7 +96,9 @@ class ObjectDetector:
             top = box[1]
             width = box[2]
             height = box[3]
-            # color = determine_color(self.frame, box)
+            colors = determine_color(self.frame, box)
+
+
             self.draw_predictions(class_ids[i], confidences[i], left, top, left + width, top + height, (255, 255, 255))
 
         print(colours)
@@ -153,9 +158,9 @@ class ObjectDetector:
 
     def run_prediction(self, file_name, file_type):
         print("[OBJECT DETECTOR] Starting new object detector thread")
-        success_indicator = []
+        success_indicator = [False]
         processing_thread = threading.Thread(target=self.prediction_engine,
                                              args=(file_name, file_type, success_indicator))
         processing_thread.start()
         processing_thread.join()
-        return success_indicator[0]
+        return success_indicator[-1]

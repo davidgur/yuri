@@ -8,7 +8,7 @@ Date Started: December 9th, 2018
 
 ------------------------------------
 YURI (Your Useless Recognizer of Images)
-Copyright (C) 2018 David Gurevich
+Copyright (C) 2018 David Gurevich, Kenan Liu
 """
 
 import cv2 as cv

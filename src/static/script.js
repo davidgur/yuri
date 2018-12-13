@@ -1,5 +1,5 @@
-var myDropzone = new Dropzone("div#dropzone", {url: "/upload"});
-Dropzone.options.dropzone = {
-    paramName: "file",
-    maxFilesize: 5,
-}
+$(document).ready(function () {
+    $('form input').change(function () {
+        $('form p').text(this.files.length + " file(s) selected");
+    });
+});

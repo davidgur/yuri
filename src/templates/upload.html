@@ -27,17 +27,13 @@
 
     <div class="container">
         <div class="file-submit">
-            <form action="/upload" class="dropzone" id="dropzone"></form>
+            <form action="/uploader" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <p>Drop File Here</p>
+                <button type="submit" class="submit-button">Upload</button>
+            </form>
         </div>
     </div>
-
-<!--
-    <form action = "/uploader" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" />
-        <input type="submit" />
-    </form>
--->
 </body>
-<script src="{{ url_for('static', filename='dropzone.js') }}"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </html>

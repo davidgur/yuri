@@ -12,51 +12,74 @@ YURI (Your Useless Recognizer of Images)
 Copyright (C) 2018 David Gurevich
 """
 
-from flask import Flask, render_template, request, redirect, session
-from werkzeug.utils import secure_filename
 from uuid import uuid4
 
-from image_recon.object_detector import ObjectDetector
+from flask import Flask, redirect, render_template, request, session
+from image_recon.mask_rcnn import ObjectDetector
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "uploaded"
 app.config["MAX_CONTENT_PATH"] = 5e6
 app.config['SECRET_KEY'] = "yuri_ocr"
 
-object_detector = ObjectDetector()
+ALLOWED_IMAGE_EXTENSIONS = ['jpeg', 'jpg', 'tiff', 'bmp', 'png', 'gif']
+ALLOWED_VIDEO_EXTENSIONS = ['mp4', 'avi']
 
-ALLOWED_EXTENSIONS = ['jpeg', 'jpg', 'tiff', 'bmp', 'png', 'gif']
+IMAGE = 'image'
+VIDEO = 'video'
+INVALID = 'invalid'
 
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
+def determine_file_type(filename):
+    if '.' in filename:
+        extension = filename.rsplit('.', 1)[1].lower()
+        if extension in ALLOWED_IMAGE_EXTENSIONS:
+            return IMAGE
+        elif extension in ALLOWED_VIDEO_EXTENSIONS:
+            return VIDEO
+        else:
+            return INVALID
 
 # Controllers
 @app.route("/")
 def main_page():
     session["user_identifier"] = str(uuid4())
-    print(session["user_identifier"])
     return render_template("upload.html")
 
 
 @app.route("/uploader", methods=["GET", "POST"])
 def upload_file():
     if request.method == 'POST':
+        object_detector = ObjectDetector()
         f = request.files['file']
-        if allowed_file(secure_filename(f.filename)):
+        file_type = determine_file_type(secure_filename(f.filename))
+        if file_type == INVALID:
+            return "Invalid File"
+        elif file_type == IMAGE:
             file_name = "src/image_recon/uploaded/" + session["user_identifier"] + ".jpg"
             f.save(file_name)
-            print(f"File ({f.filename} successfully")
-            return redirect("/results")
-        else:
-            return "Invalid file"
+            session["file_extension"] = "jpg"
+            session["file_type"] = IMAGE
+            object_detector.run_prediction(session["user_identifier"] + ".jpg", IMAGE)
+            del object_detector
+
+            return redirect('/results')
+        elif file_type == VIDEO:
+            file_name = "src/image_recon/uploaded/" + session["user_identifier"] + ".avi"
+            f.save(file_name)
+            session["file_extension"] = "avi"
+            session["file_type"] = VIDEO
+            object_detector.run_prediction(session["user_identifier"] + ".avi", VIDEO)
+            del object_detector
+
+            return redirect('/results')
 
 
 @app.route("/results")
 def results():
-    print(object_detector.run_prediction(session["user_identifier"] + ".jpg", "image"))
-    return render_template("result.html", img_name=(session["user_identifier"] + "_predicted.jpg"))
+    return render_template("result.html", img_name=(session["user_identifier"] + "_predicted." +
+                                                    session["file_extension"]), is_video=session["file_type"] == VIDEO)
 
 
 # Launch Flask Server

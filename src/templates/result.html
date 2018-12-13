@@ -5,7 +5,12 @@
     <title>Results</title>
 </head>
 <body>
+{% if is_video %}
+    <video controls>
+        <source src="static/{{ img_name }}" type="video/avi">
+    </video>
+{% else %}
     <img src="static/{{ img_name }}"/>
-
+{% endif %}
 </body>
 </html>

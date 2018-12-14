@@ -22,11 +22,11 @@ from image_recon.color_detector import determine_color, increase_contrast
 
 class ObjectDetector:
     def __init__(self):
-        self.confidence_threshold = 0.5
+        self.confidence_threshold = 0.3
         self.mask_threshold = 0.3
 
-        self.text_graph = "src/image_recon/models/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt"
-        self.model_weights = "src/image_recon/models/mask_rcnn_inception_v2_coco_2018_01_28/frozen_inference_graph.pb"
+        self.text_graph = "src/image_recon/models/inception_v2/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt"
+        self.model_weights = "src/image_recon/models/inception_v2/frozen_inference_graph.pb"
 
         self.net = cv.dnn.readNetFromTensorflow(self.model_weights, self.text_graph)
         self.net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
@@ -34,17 +34,7 @@ class ObjectDetector:
 
         self.frame = None
 
-        self.colors_file = "src/image_recon/models/colors.txt"
-        self.colors = []
-        with open(self.colors_file, 'rt') as f:
-            self.colors_str = f.read().rstrip('\n').split('\n')
-
-        for color_str in self.colors_str:
-            rgb = color_str.split(' ')
-            color = np.array([float(rgb[0]), float(rgb[1]), float(rgb[2])])
-            self.colors.append(color)
-
-        self.classes_file = "src/image_recon/models/mscoco_labels.names"
+        self.classes_file = "src/image_recon/models/inception_v2/mscoco_labels.names"
         self.classes = None
         with open(self.classes_file, 'rt') as f:
             self.classes = f.read().rstrip('\n').split('\n')
@@ -78,7 +68,6 @@ class ObjectDetector:
         #                                               roi).astype(np.uint8)
 
     def post_process(self, boxes, masks):
-        num_classes = masks.shape[1]
         num_detections = boxes.shape[2]
 
         colors = []

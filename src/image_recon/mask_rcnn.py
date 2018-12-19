@@ -30,7 +30,7 @@ class ObjectDetector:
 
         self.net = cv.dnn.readNetFromTensorflow(self.model_weights, self.text_graph)
         self.net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
-        self.net.setPreferableTarget(cv.dnn.DNN_TARGET_OPENCL)
+        self.net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
 
         self.frame = None
 

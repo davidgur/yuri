@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='webassets/style.css') }}"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto:900" rel="stylesheet">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400" />
-    <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='webassets/jquery-3.3.1.min.js') }}"></script>
     <title>yuri - Object Detection Solutions</title>
 </head>
 <body>
     <div class="videoContainer">
         <div class="overlay"></div>
         <video autoplay loop muted>
-            <source src="{{ url_for('static', filename='bg_video_comp.mp4') }}" type="video/mp4">
-            <source src="{{ url_for('static', filename='bg_video_comp.webm') }}" type="video/webm">
+            <source src="{{ url_for('static', filename='webassets/bg_video_comp.mp4') }}" type="video/mp4">
+            <source src="{{ url_for('static', filename='webassets/bg_video_comp.webm') }}" type="video/webm">
         </video>
     </div>
 
@@ -35,5 +35,5 @@
         </div>
     </div>
 </body>
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='webassets/script.js') }}"></script>
 </html>

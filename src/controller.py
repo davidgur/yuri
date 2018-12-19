@@ -14,8 +14,8 @@ Copyright (C) 2018 David Gurevich
 
 from uuid import uuid4
 
+import image_recon.mask_rcnn
 from flask import Flask, redirect, render_template, request, session
-from image_recon.mask_rcnn import ObjectDetector
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -41,6 +41,7 @@ def determine_file_type(filename):
         else:
             return INVALID
 
+
 # Controllers
 @app.route("/")
 def main_page():
@@ -51,7 +52,7 @@ def main_page():
 @app.route("/uploader", methods=["GET", "POST"])
 def upload_file():
     if request.method == 'POST':
-        object_detector = ObjectDetector()
+        object_detector = image_recon.mask_rcnn.ObjectDetector()
         f = request.files['file']
         file_type = determine_file_type(secure_filename(f.filename))
         if file_type == INVALID:
@@ -84,4 +85,4 @@ def results():
 
 # Launch Flask Server
 if __name__ == '__main__':
-    app.run(host="10.243.203.200")
+    app.run()

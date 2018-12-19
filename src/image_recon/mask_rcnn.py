@@ -17,13 +17,25 @@ import os.path
 
 import cv2 as cv
 import numpy as np
-from image_recon.color_detector import determine_color, increase_contrast
+from image_recon.color_detector import ColorDetector
 
 
 class ObjectDetector:
+    """
+    This is a class for simple object detection
+    with Mask-RCNN
+    """
+
     def __init__(self):
+        """
+        The constructor of the ObjectDetector class.
+
+        Initializes critical variables and options for the object detector.
+        """
         self.confidence_threshold = 0.3
         self.mask_threshold = 0.3
+
+        self.color_detector = ColorDetector()
 
         self.text_graph = "src/image_recon/models/inception_v2/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt"
         self.model_weights = "src/image_recon/models/inception_v2/frozen_inference_graph.pb"
@@ -40,15 +52,23 @@ class ObjectDetector:
             self.classes = f.read().rstrip('\n').split('\n')
 
     def get_color_of_prediction(self, frame, left, top, right, bottom, class_mask):
-        new_frame = increase_contrast(frame)
+        """
+        Given a frame and a mask, return the color of the object inside.
+        """
+
+        new_frame = self.color_detector.increase_contrast(frame)
 
         class_mask = cv.resize(class_mask, (right - left + 1, bottom - top + 1))
         mask = (class_mask > self.mask_threshold)
         roi = new_frame[top:bottom + 1, left:right + 1][mask]
-        return determine_color(roi.astype(np.uint8))
+
+        self.color_detector.set_roi(roi.astype(np.uint8))
+        return self.color_detector.determine_color()
 
     def draw_box(self, frame, class_id, conf, left, top, right, bottom, class_mask, color):
-
+        """
+        Draws a box around a detected object with the name of the object and the oonfidence
+        """
         cv.rectangle(frame, (left, top), (right, bottom), color, 3)
         label = "%.2f" % conf
         if self.classes:
@@ -64,10 +84,10 @@ class ObjectDetector:
         mask = (class_mask > self.mask_threshold)
         roi = frame[top:bottom + 1, left:right + 1][mask]
 
-        # frame[top:bottom + 1, left:right + 1][mask] = ([0.3 * color[0], 0.3 * color[1], 0.3 * color[2]] + 0.7 *
-        #                                               roi).astype(np.uint8)
-
     def post_process(self, boxes, masks):
+        """
+        Catch-all function to draw boxes and determine color of objects.
+        """
         num_detections = boxes.shape[2]
 
         colors = []
@@ -121,6 +141,10 @@ class ObjectDetector:
                 self.draw_box(self.frame, class_id, score, left, top, right, bottom, class_mask, colors[i])
 
     def mask_rcnn(self, file, file_type):
+        """
+        Run the object detection neural network for all images in
+        an input stream.
+        """
         output_file = "src/static/" + file[:-4]
         file = "src/image_recon/uploaded/" + file
 
@@ -163,6 +187,9 @@ class ObjectDetector:
         return True
 
     def run_prediction(self, file_name, file_type):
+        """
+        Create an async thread to run the object detector on a file.
+        """
         from multiprocessing.pool import ThreadPool
 
         print("[OBJECT DETECTOR] Starting new object detector thread")

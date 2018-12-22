@@ -10,6 +10,9 @@ Date Started: December 11th, 2018
 YURI (Your Useless Recognizer of Images)
 Copyright (C) 2018 David Gurevich, Kenan Liu
 """
+import json
+import webcolors
+
 
 class ColorConverter:
 
@@ -19,19 +22,34 @@ class ColorConverter:
         Using RGB and color values
         """
         self.rgb = ()
-        self.color = ''
+        self.webcolors = {}
+        self.closest_color = 'None'
+        self.color_name = 'None'
+
+
+    def get_webcolors(self, file):
+        """
+        Method takes JSON file and converts it into a python dictionary.
+        Sets the self.webcolors variable, however returns None.
+
+        (str) --> (dict)
+        """
+        with open(file) as json_file:
+            self.webcolors = json.load(json_file)
+
 
     def tuple_check(self, rgb):
         """
         Method takes an input, checks if the input is a tuple, and returns boolean value.
 
-        (input) --> (bool)
+        (tuple) --> (bool)
         """
         if isinstance(rgb, tuple):
             return True
 
         else:
             return False
+
 
     def tuple_correction(self, rgb):
         """
@@ -40,61 +58,58 @@ class ColorConverter:
 
         (tuple) --> (tuple)
         """
+
         if len(rgb) != 3:
+            ############ADD CLASS DAVID SAID ABOUT EXCEPTIONS
             print('Tuple is not RGB compatible')
-            return (0,0,0)
-        
+            self.rgb = (255, 255, 255)
+            return self.rgb
+
         r, g, b = rgb
         r = round(r)
         g = round(g)
         b = round(b)
 
         if r > 255 or r < 0 or g > 255 or g < 0 or b > 255 or b < 0:
+            ############ADD CLASS DAVID SAID ABOUT EXCEPTIONS
             print('Tuple is not RGB compatible')
-            return (0,0,0)
+            self.rgb = (255, 255, 255)
+            return self.rgb
 
         else:
             self.rgb = (r, g, b)
             return self.rgb
 
-    def get_color(self, rgb):
-        #
-        #
-        #LOOTTAAAAA WORKKK HEREEEEEEEEEE GOOGLE IT LATER
-        #
-        #
-        return "color_here"
-        pass
 
-    def convert_RGB(self, rgb):
-        
-        if self.tuple_check(rgb):
-            self.tuple_correction(rgb)
-            self.color = self.get_color(rgb)
+    def get_closest_color(self, rgb, color_file):
+        self.rgb = rgb
+        self.get_webcolors(color_file)
 
-            return self.color
+        if self.tuple_check(self.rgb):
+            self.tuple_correction(self.rgb)
+            min_colours = {}
+            for key, name in webcolors.css3_hex_to_names.items():
+                r_c, g_c, b_c = webcolors.hex_to_rgb(key)
+                rd = (r_c - self.rgb[0]) ** 2
+                gd = (g_c - self.rgb[1]) ** 2
+                bd = (b_c - self.rgb[2]) ** 2
+                min_colours[(rd + gd + bd)] = name
 
-#        import webcolors
-#
-#        def closest_colour(requested_colour):
-#            min_colours = {}
-#            for key, name in webcolors.css3_hex_to_names.items():
-#                r_c, g_c, b_c = webcolors.hex_to_rgb(key)
-#                rd = (r_c - requested_colour[0]) ** 2
-#                gd = (g_c - requested_colour[1]) ** 2
-#                bd = (b_c - requested_colour[2]) ** 2
-#                min_colours[(rd + gd + bd)] = name
-#            return min_colours[min(min_colours.keys())]
-#
-#        def get_colour_name(requested_colour):
-#            try:
-#                closest_name = actual_name = webcolors.rgb_to_name(requested_colour)
-#            except ValueError:
-#                closest_name = closest_colour(requested_colour)
-#                actual_name = None
-#            return actual_name, closest_name
-#
-#        requested_colour = (119, 172, 152)
-#        actual_name, closest_name = get_colour_name(requested_colour)
-#
-#        print("Actual colour name:", actual_name, ", closest colour name:", closest_name)
+            self.closest_color = min_colours[min(min_colours.keys())]
+            self.color_name = self.webcolors[self.closest_color]
+
+            return self.color_name
+
+        else:
+            return 'DAVID IS A QUEER and a RACIST'
+
+
+n = ColorConverter()
+
+requested_colour = (255, 0, 255)
+print(n.get_closest_color(requested_colour, 'colors.json'))
+
+print(n.webcolors)
+
+print("The closest color is: " + n.closest_color)
+print("The ACTUAL color is: " + n.color_name)

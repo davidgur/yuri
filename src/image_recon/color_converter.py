@@ -13,7 +13,6 @@ Copyright (C) 2018 David Gurevich, Kenan Liu
 import json
 import webcolors
 
-
 class ColorConverter:
 
     def __init__(self):
@@ -82,6 +81,14 @@ class ColorConverter:
 
 
     def get_closest_color(self, rgb, color_file):
+        """
+        Method takes an RGB tuple and JSON file as inputs.
+        Method calls other methods to ensure everything is compatible.
+        Method converts RGB into HEX and searches the 'webcolors' database and sets the closest common color name.
+        Method then searches JSON file dictionary for the common general name for the closest name.
+
+        (tuple) (json_file) --> (str)
+        """
         self.rgb = rgb
         self.get_webcolors(color_file)
 
@@ -103,7 +110,7 @@ class ColorConverter:
         else:
             return 'DAVID IS A QUEER and a RACIST'
 
-
+# Example Test - ERROR TESTED ALREADY FOR INVALID INPUTS
 n = ColorConverter()
 
 requested_colour = (255, 0, 255)

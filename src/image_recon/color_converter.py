@@ -11,7 +11,9 @@ YURI (Your Useless Recognizer of Images)
 Copyright (C) 2018 David Gurevich, Kenan Liu
 """
 import json
+
 import webcolors
+
 
 class ColorConverter:
 
@@ -108,15 +110,4 @@ class ColorConverter:
             return self.color_name
 
         else:
-            return 'DAVID IS A QUEER and a RACIST'
-
-# Example Test - ERROR TESTED ALREADY FOR INVALID INPUTS
-n = ColorConverter()
-
-requested_colour = (255, 0, 255)
-print(n.get_closest_color(requested_colour, 'colors.json'))
-
-print(n.webcolors)
-
-print("The closest color is: " + n.closest_color)
-print("The ACTUAL color is: " + n.color_name)
+            return 'Error Converting Color!'

@@ -14,9 +14,11 @@ Copyright (C) 2018 David Gurevich
 """
 
 import os.path
+import time
 
 import cv2 as cv
 import numpy as np
+from image_recon.color_converter import ColorConverter
 from image_recon.color_detector import ColorDetector
 
 
@@ -32,10 +34,12 @@ class ObjectDetector:
 
         Initializes critical variables and options for the object detector.
         """
-        self.confidence_threshold = 0.3
+        self.confidence_threshold = 0.5
         self.mask_threshold = 0.3
 
         self.color_detector = ColorDetector()
+        self.color_converter = ColorConverter()
+        self.colors = "src/image_recon/colors.json"
 
         self.text_graph = "src/image_recon/models/inception_v2/mask_rcnn_inception_v2_coco_2018_01_28.pbtxt"
         self.model_weights = "src/image_recon/models/inception_v2/frozen_inference_graph.pb"
@@ -67,13 +71,18 @@ class ObjectDetector:
 
     def draw_box(self, frame, class_id, conf, left, top, right, bottom, class_mask, color):
         """
-        Draws a box around a detected object with the name of the object and the oonfidence
+        Draws a box around a detected object with the name of the object and the confidence
         """
         cv.rectangle(frame, (left, top), (right, bottom), color, 3)
         label = "%.2f" % conf
         if self.classes:
             assert (class_id < len(self.classes))
-            label = '%s:%s' % (self.classes[class_id], label)
+            # label = '%s' % (self.classes[class_id])
+            if self.classes[class_id] == "person":
+                label = '%s' % (self.classes[class_id])
+            else:
+                label = '%s %s' % (
+                self.color_converter.get_closest_color(color[::-1], self.colors), self.classes[class_id])
 
         label_size, base_line = cv.getTextSize(label, cv.FONT_HERSHEY_DUPLEX, 0.5, 1)
         top = max(top, label_size[1])
@@ -165,6 +174,7 @@ class ObjectDetector:
                 round(cap.get(cv.CAP_PROP_FRAME_WIDTH)), round(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
 
         while cv.waitKey(1) < 0:
+            start_time = time.time()
             has_frame, self.frame = cap.read()
             if not has_frame:
                 print("[OBJECT DETECTOR] Done Processing!")
@@ -175,14 +185,17 @@ class ObjectDetector:
             boxes, masks = self.net.forward(['detection_out_final', 'detection_masks'])
             self.post_process(boxes, masks)
 
-            label = 'yuri (your useless recognizer (of) images)'
-            cv.putText(self.frame, label, (0, 15), cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0))
+            # label = 'yuri (your useless recognizer (of) images)'
+            # cv.putText(self.frame, label, (0, 15), cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0))
 
             if file_type == "image":
                 cv.imwrite(output_file, self.frame.astype(np.uint8))
                 print("[OBJECT DETECTOR] Wrote the file to", output_file)
             else:
                 vid_writer.write(self.frame.astype(np.uint8))
+
+            end_time = time.time()
+            print("[OBJECT DETECTOR] Time Elapsed:", round(end_time - start_time, 2))
 
         return True
 

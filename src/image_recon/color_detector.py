@@ -61,7 +61,10 @@ class ColorDetector:
         return hist
 
     def determine_color(self):
-        self.clt.fit(self.roi)
+        try:
+            self.clt.fit(self.roi)
+        except ValueError:  # If a color wasn't found, return grey
+            return 69, 69, 69
 
         hist = self.find_histogram()
         colors = [color.astype("uint8")[::-1] for (percent, color) in zip(hist, self.clt.cluster_centers_)]

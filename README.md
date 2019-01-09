@@ -14,3 +14,7 @@ This is a program designed to take your image, and analyze it to find whatever i
 * **Kenan Liu** - *Back-end Software Engineer*
 * **AJ Heft** - *Project Manager*
 * **Daniel Madan** - *Web Developer*
+
+## License
+
+This project is licensed under the GNU Lesser General Public License v3.0

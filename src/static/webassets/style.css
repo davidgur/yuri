@@ -104,3 +104,9 @@ form button:hover {
 form button:active {
     border: 0;
 }
+
+.dropdown-menu {
+    top: 1%;
+    bottom: 2%;
+    display: inline-block;
+}

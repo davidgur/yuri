@@ -53,6 +53,11 @@ def main_page():
 def upload_file():
     if request.method == 'POST':
         object_detector = image_recon.mask_rcnn.ObjectDetector()
+
+        color_choice = request.form['color-choice']
+        print(color_choice)
+        object_choice = request.form['object-choice']
+
         f = request.files['file']
         file_type = determine_file_type(secure_filename(f.filename))
         if file_type == INVALID:
@@ -62,7 +67,7 @@ def upload_file():
             f.save(file_name)
             session["file_extension"] = "jpg"
             session["file_type"] = IMAGE
-            object_detector.run_prediction(session["user_identifier"] + ".jpg", IMAGE)
+            object_detector.run_prediction(session["user_identifier"] + ".jpg", IMAGE, color_choice, object_choice)
             del object_detector
 
             return redirect('/results')

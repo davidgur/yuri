@@ -1,21 +1,22 @@
-# yuri
-### Your Useless Recognizer of Images
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7b633392506d40288027b92968f09172)](https://www.codacy.com/app/davidgur/yuri?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=davidgur/yuri&amp;utm_campaign=Badge_Grade)
+<div align="center">
+  <img src="https://i.ibb.co/nM80Bcp/yuri-logo.png" alt="yuri-logo">
+</div>
 
-This is a program designed to take your image, and analyze it to find whatever is in it, and its colour.
+ -----------------
+ 
+ 
+**yuri** is a program designed to take your image, and analyze it to find whatever is in it, and its colour. It accomplishes this by using the Mask-RCNN object detection method. Mask-RCNN outputs a mask, an image's location, and it's label. The mask (a 4D array) is then sent to a function which uses the KMeans method to determine the most prominent color in the mask. This is used to determine the name of the color.
 
-## Built With
+This program is implemented as a Flask server. Each object detection process is run asynchronously so as to support multiple object detection jobs at a time. 
 
-* Python (https://www.python.org/)
-* OpenCV (https://opencv.org/)
 
-## Authors
+### Authors
 
-* **David Gurevich** - *Team Lead/Machine Learning Engineer*
-* **Kenan Liu** - *Back-end Software Engineer*
-* **AJ Heft** - *Project Manager*
-* **Daniel Madan** - *Web Developer*
+  * **David Gurevich** - *Team Lead/Machine Learning Engineer*
+  * **Kenan Liu** - *Back-end Software Engineer*
+  * **AJ Heft** - *Project Manager*
+  * **Daniel Madan** - *Web Developer*
 
-## License
+### License
 
 This project is licensed under the GNU Lesser General Public License v3.0

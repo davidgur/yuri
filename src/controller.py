@@ -12,6 +12,7 @@ YURI (Your Useless Recognizer of Images)
 Copyright (C) 2018 David Gurevich
 """
 
+import os
 from uuid import uuid4
 
 import image_recon.mask_rcnn
@@ -49,13 +50,23 @@ def main_page():
     return render_template("upload.html")
 
 
+# @app.before_first_request
+def delete_existing_files():
+    for filename in os.listdir("src/image_recon/uploaded"):
+        if not filename.endswith(".txt"):
+            os.unlink(filename)
+
+    for filename in os.listdir("src/image_recon/uploaded"):
+        if os.path.isfile(filename):
+            os.unlink(filename)
+
+
 @app.route("/uploader", methods=["GET", "POST"])
 def upload_file():
     if request.method == 'POST':
         object_detector = image_recon.mask_rcnn.ObjectDetector()
 
         color_choice = request.form['color-choice']
-        print(color_choice)
         object_choice = request.form['object-choice']
 
         f = request.files['file']
@@ -90,4 +101,4 @@ def results():
 
 # Launch Flask Server
 if __name__ == '__main__':
-    app.run()
+    app.run(host="10.243.219.146")

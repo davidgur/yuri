@@ -49,18 +49,6 @@ def main_page():
     session["user_identifier"] = str(uuid4())
     return render_template("upload.html")
 
-
-# @app.before_first_request
-def delete_existing_files():
-    for filename in os.listdir("src/image_recon/uploaded"):
-        if not filename.endswith(".txt"):
-            os.unlink(filename)
-
-    for filename in os.listdir("src/image_recon/uploaded"):
-        if os.path.isfile(filename):
-            os.unlink(filename)
-
-
 @app.route("/uploader", methods=["GET", "POST"])
 def upload_file():
     if request.method == 'POST':
@@ -101,4 +89,4 @@ def results():
 
 # Launch Flask Server
 if __name__ == '__main__':
-    app.run(host="10.243.219.146")
+    app.run()

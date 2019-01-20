@@ -1,5 +1,19 @@
-numpy==1.15.4
-Werkzeug==0.14.1
-opencv_python==3.4.4.19
-Flask==1.0.2
-scikit_learn==0.20.1
+# controller.py: 19
+Flask == 1.0.2
+
+# controller.py: 20
+Werkzeug == 0.14.1
+
+# image_recon\color_detector.py: 15
+# image_recon\mask_rcnn.py: 20
+numpy == 1.15.4
+
+# image_recon\color_detector.py: 14
+# image_recon\mask_rcnn.py: 19
+opencv_python == 3.4.4.19
+
+# image_recon\color_detector.py: 17
+sklearn == 0.0
+
+# image_recon\color_converter.py: 15
+webcolors == 1.8.1

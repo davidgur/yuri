@@ -10,6 +10,28 @@
 This program is implemented as a Flask server. Each object detection process is run asynchronously so as to support multiple object detection jobs at a time. 
 
 
+## Usage Instructions
+**yuri** is designed with ease of use in mind. There are a few steps to running yuri on your system.
+**NOTE: yuri requires a relatively powerful CPU or GPU to work. In addition, it requires at least 8 GB of RAM to function.**
+
+1. Install dependencies
+  The dependencies are listed in `requirements.txt`. Install them, and there shouldn't be any issue.
+2. Configure based on preferred computation target.
+  **yuri** is preconfigured for use with the CPU. If you want to use the GPU to do the computation, change the line in `src/mask_rcnn.py`
+    ``` python
+    self.net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
+    ```
+    to
+    ``` python
+    self.net.setPreferableTarget(cv.dnn.DNN_TARGET_OPENCL)
+    ```
+3. Launch Flask server
+  Launch a terminal, and in the yuri folder, run `python src/controller.py`.
+  This will start a Flask server that you can view at `localhost:5000`. You may change the host by navigating to `controller.py`, line 105 and in `app.run()`, adding an optional parameter `host=255.255.255.255`.
+
+4. Using **yuri**
+  Once you have navigated to the website, you can click on the "Drop file here" box, and select an image or video. Modifying the two dropdown menus will allow you to select what objects are detected by yuri. Finally, pressing "Upload" will launch the object detection process in an Async thread. When the process is complete, you will be redirected to the resulting image.
+
 ### Authors
 
   * **David Gurevich** - *Team Lead/Machine Learning Engineer*

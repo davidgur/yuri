@@ -32,6 +32,14 @@ This program is implemented as a Flask server. Each object detection process is 
 4. Using **yuri**
   Once you have navigated to the website, you can click on the "Drop file here" box, and select an image or video. Modifying the two dropdown menus will allow you to select what objects are detected by yuri. Finally, pressing "Upload" will launch the object detection process in an Async thread. When the process is complete, you will be redirected to the resulting image.
 
+
+Example:
+<div align='center'>
+  <img src="https://i.ibb.co/JpzFd1Y/25691390-f9944f61b5-z.jpg" alt="25691390-f9944f61b5-z" border="0">
+  <img src="https://i.ibb.co/pKnLXWk/a544e6ed-bc76-4ae7-b865-949c2ae1ce2c-predicted.jpg" alt="a544e6ed-bc76-4ae7-b865-949c2ae1ce2c-predicted" border="0">
+</div>
+
+
 ### Authors
 
   * **David Gurevich** - *Team Lead/Machine Learning Engineer*

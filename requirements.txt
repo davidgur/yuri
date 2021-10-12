@@ -10,7 +10,7 @@ numpy == 1.15.4
 
 # image_recon\color_detector.py: 14
 # image_recon\mask_rcnn.py: 19
-opencv_python == 3.4.4.19
+opencv_python == 3.4.7.28
 
 # image_recon\color_detector.py: 17
 sklearn == 0.0

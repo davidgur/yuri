@@ -6,7 +6,7 @@ Werkzeug == 0.15.3
 
 # image_recon\color_detector.py: 15
 # image_recon\mask_rcnn.py: 20
-numpy == 1.15.4
+numpy == 1.22.0
 
 # image_recon\color_detector.py: 14
 # image_recon\mask_rcnn.py: 19

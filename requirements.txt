@@ -1,5 +1,5 @@
 # controller.py: 19
-Flask == 1.0.2
+Flask == 2.3.2
 
 # controller.py: 20
 Werkzeug == 2.2.3

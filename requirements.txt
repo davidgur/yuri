@@ -2,7 +2,7 @@
 Flask == 2.3.2
 
 # controller.py: 20
-Werkzeug == 3.0.1
+Werkzeug == 3.0.3
 
 # image_recon\color_detector.py: 15
 # image_recon\mask_rcnn.py: 20
